@@ -1,10 +1,19 @@
 import React, { useState } from 'react';
+import { Provider } from 'react-redux';
+import { configureStore } from '@reduxjs/toolkit';
+import cartReducer from './CartSlice';
 import ProductList from './ProductList';
 import CartItem from './CartItem';
 import AboutUs from './AboutUs';
 import './App.css';
 
-function App() {
+const store = configureStore({
+  reducer: {
+    cart: cartReducer,
+  },
+});
+
+function AppContent() {
   const [currentPage, setCurrentPage] = useState('landing');
 
   return (
@@ -12,8 +21,12 @@ function App() {
       {currentPage === 'landing' && (
         <div className="landing-page">
           <div className="landing-content">
-            <h1>🌿 Paradise Nursery</h1>
-            <p>Bring nature indoors. Discover beautiful houseplants for every corner of your home.</p>
+            <h1>Paradise Nursery</h1>
+            <h2>Where Green Meets Serenity</h2>
+            <p>
+              Welcome to Paradise Nursery — your one-stop destination for beautiful,
+              healthy houseplants. Bring nature indoors and transform your living spaces.
+            </p>
             <button
               className="get-started-btn"
               onClick={() => setCurrentPage('products')}
@@ -33,19 +46,17 @@ function App() {
       )}
 
       {currentPage === 'about' && (
-        <>
-          <nav className="navbar">
-            <h2>🌿 Paradise Nursery</h2>
-            <ul className="navbar-links">
-              <li><a href="#" onClick={() => setCurrentPage('landing')}>Home</a></li>
-              <li><a href="#" onClick={() => setCurrentPage('products')}>Plants</a></li>
-              <li><a href="#" onClick={() => setCurrentPage('cart')}>Cart</a></li>
-            </ul>
-          </nav>
-          <AboutUs />
-        </>
+        <AboutUs onNavigate={setCurrentPage} />
       )}
     </div>
+  );
+}
+
+function App() {
+  return (
+    <Provider store={store}>
+      <AppContent />
+    </Provider>
   );
 }
 
